@@ -1,12 +1,28 @@
 <template>
   <div class="game-field-container">
-    <canvas ref="gameCanvas"></canvas>
+    <canvas ref="gameCanvas" @click="handleClick">
+    </canvas>
   </div>
 </template>
 
 <script>
+const imageModules = import.meta.glob('/src/assets/tiles/*.svg');
+
+let images = [];
+for (const path in imageModules) {
+  imageModules[path]().then((module) => {
+    images.push(module.default);
+  });
+}
+
 export default {
   name: 'GameField',
+  data() {
+    return {
+      images,
+      gridSpacing: 70,
+    };
+  },
   mounted() {
     this.setCanvasSize();
     window.addEventListener('resize', this.setCanvasSize);
@@ -55,7 +71,24 @@ export default {
         ctx.strokeStyle = y % (gridSpacing * majorLineInterval) === 0 ? majorLineColor : minorLineColor;
         ctx.stroke();
       }
-    }
+    },
+    handleClick(event) {
+      const rect = this.$refs.gameCanvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const gridX = Math.floor(x / this.gridSpacing);
+      const gridY = Math.floor(y / this.gridSpacing);
+      this.drawSvgImage(gridX, gridY);
+    },
+    drawSvgImage(gridX, gridY) {
+      const canvas = this.$refs.gameCanvas;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = this.images[Math.floor(Math.random() * this.images.length)];
+      img.onload = () => {
+        ctx.drawImage(img, gridX * this.gridSpacing, gridY * this.gridSpacing, this.gridSpacing, this.gridSpacing);
+      };
+    },
   },
 };
 </script>
