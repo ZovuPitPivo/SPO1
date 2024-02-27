@@ -1,6 +1,6 @@
 <template>
   <div class="menu-container">
-    <button v-for="button in buttons" :key="button.id" class="menu-button">
+    <button v-for="button in buttons" :key="button.id" class="menu-button" @click=button.func>
       <i :class="`fi ${button.icon}`"></i>
     </button>
   </div>
@@ -17,13 +17,21 @@ export default {
         { id: 3, icon: "fi-sr-badge-check"} // End turn
       ],
       buttons: [
-        { id: 1, icon: 'fi-sr-diamond-turn-right' },
-        { id: 2, icon: 'fi-sr-admin' },
-        { id: 3, icon: 'fi-sr-rotate-left' },
-        { id: 4, icon: 'fi-sr-rotate-right' },
+        { id: 1, icon: 'fi-sr-diamond-turn-right', func: null},
+        { id: 2, icon: 'fi-sr-admin', func: null},
+        { id: 3, icon: 'fi-sr-rotate-left', func: this.rotateLeft },
+        { id: 4, icon: 'fi-sr-rotate-right', func: this.rotateRight },
       ],
     };
   },
+  methods: {
+    rotateLeft() {
+      this.$emit('rotate-image', 'left');
+    },
+    rotateRight() {
+      this.$emit('rotate-image', 'right');
+    }
+  }
 };
 </script>
 

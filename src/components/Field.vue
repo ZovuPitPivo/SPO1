@@ -2,7 +2,7 @@
   <div class="game-field-container">
     <canvas ref="gameCanvas" @click="handleClick">
     </canvas>
-    <button class="rotate-button" v-if="selectedImage" @click="rotateSelectedImage">Повернуть плитку</button>
+<!--    <button class="rotate-button" v-if="selectedImage" @click="rotateSelectedImage">Повернуть плитку</button>-->
   </div>
 </template>
 
@@ -131,8 +131,22 @@ export default {
         ctx.stroke();
       }
     },
+    takeCard() {
+      if (this.riversImgsIndex < this.riversImgs.length) {
+        // Еще есть изображения рек для выбора
+        this.selectedImage = this.riversImgs[this.riversImgsIndex++];
+        this.drawSelectedImage();
+      } else if (this.images.length > 0) {
+        // Изображения рек закончились, выбираем из оставшихся изображений
+        let randomIndex = Math.floor(Math.random() * this.images.length);
+        this.selectedImage = this.images.splice(randomIndex, 1)[0];
+        this.drawSelectedImage();
+      }
+    },
+    placeCard() {
+
+    },
     handleClick(event) {
-      let imgIndex;
       if (!this.selectedImage) {
         // Если изображение не выбрано, выбираем его
         if (this.riversImgsIndex < this.riversImgs.length) {
@@ -154,6 +168,7 @@ export default {
         const gridY = Math.floor(y / this.gridSpacing);
         this.drawSvgImage(gridX, gridY, this.selectedImage, this.selectedImageRotation);
         this.selectedImage = null;
+        this.selectedImageRotation = 0;
       }
     },
     drawSvgImage(gridX, gridY, imgSrc, rotation) {
@@ -188,14 +203,16 @@ export default {
         ctx.restore();
       };
     },
-    rotateSelectedImage() {
+    rotateSelectedImage(direction = 'right') {
       if (!this.selectedImage) return;
-      this.selectedImageRotation += 90;
+      this.selectedImageRotation += direction === 'right' ? 90 : -90;
       if (this.selectedImageRotation >= 360) {
         this.selectedImageRotation = 0;
+      } else if (this.selectedImageRotation < 0) {
+        this.selectedImageRotation = 270;
       }
       this.drawSelectedImage();
-    },
+    }
   },
 };
 </script>

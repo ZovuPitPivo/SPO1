@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <GameField/>
-    <GameMenu/>
+    <GameField ref="fieldComponent" />
+    <GameMenu @rotate-image="rotateImageInField" />
   </div>
   <link href="./assets/uicons-solid-rounded.css" rel="stylesheet">
 </template>
@@ -18,6 +18,12 @@ export default {
     GameField, // Регистрация компонента GameField
     GameMenu,
   },
+  methods: {
+    rotateImageInField(direction) {
+      console.log(1)
+      this.$refs.fieldComponent.rotateSelectedImage(direction);
+    }
+  }
 };
 </script>
 
