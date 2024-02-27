@@ -22,11 +22,11 @@ CREATE TABLE GameBoards
 -- Таблица плиток
 CREATE TABLE Tiles
 (
-    TileID   INT PRIMARY KEY,
-    TileName VARCHAR(100),
-    TileType VARCHAR(50),
-    ImageURL VARCHAR(255)
+    TileID    INT PRIMARY KEY,
+    TileName  VARCHAR(255) NOT NULL,
+    ImagePath VARCHAR(255) NOT NULL
 );
+
 
 -- Таблица, связывающая игровые поля с плитками
 CREATE TABLE GameBoardTiles
