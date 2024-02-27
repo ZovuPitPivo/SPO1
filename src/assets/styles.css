@@ -1,0 +1,467 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #C5C5C5;
+    overflow-y: hidden;
+}
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    width: max(5vw, 60px);
+    height: 100vh;
+    background-color: #212121;
+    box-shadow: 10px 0 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    left: -70px;
+    opacity: 0.3;
+    transition: left 1s, opacity 1s, width 0.5s;
+}
+
+#sidebar.loaded {
+    left: 0;
+    opacity: 1;
+}
+
+#sidebar.expanded {
+    width: 15vw;
+}
+
+.playCrossBtn {
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    border: none;
+    background: transparent;
+    width: 40px;
+    height: 26px;
+    margin: 10px;
+}
+.playCrossBtn::before,
+.playCrossBtn::after {
+    content: '';
+    left: 0;
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 4px;
+    border-radius: 10px;
+    background: #C5C5C5;
+}
+.playCrossBtn::before {
+    top: 0;
+    box-shadow: 0 11px 0 #C5C5C5;
+    transition: box-shadow .3s .15s, top .3s .15s, transform .3s;
+}
+.playCrossBtn::after {
+    bottom: 0;
+    transition: bottom .3s .15s, transform .3s;
+}
+.playCrossBtn.active::before {
+    top: 11px;
+    transform: rotate(45deg);
+    box-shadow: 0 6px 0 rgba(0,0,0,0);
+    transition: box-shadow .15s, top .3s, transform .3s .15s;
+}
+.playCrossBtn.active::after {
+    bottom: 11px;
+    transform: rotate(-45deg);
+    transition: bottom .3s, transform .3s .15s;
+}
+
+
+#content {
+    height: 100vh;
+    margin-left: max(7vw, 70px); /* отступ слева от меню */
+    padding-top: 0; /* отступ сверху */
+    transition: margin-left 0.5s, filter 0.5s; /* Плавное изменение отступа и размытия */
+}
+
+#sidebar.expanded ~ #content {
+    margin-left: 17vw;
+    filter: blur(4px);
+}
+
+#dynamicText {
+    font-size: 5vmin;
+    opacity: 0;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    transform: translateY(20px);
+    transition: opacity 1s, transform 1s;
+}
+
+#dynamicText.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.greyContainer {
+    width: 320px;
+    height: calc(100vh - 60px - 1em - 30px);
+    background-color: #D9D9D9;
+    margin-left: 0px;
+    position: absolute;
+    top: calc(60px + 1em);
+    /* box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s, transform 1s;
+}
+
+.greyContainer.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.blackRectangle {
+    width: 100%;
+    height: 65%;
+    background-color: #464646;
+    margin-bottom: 10px;
+}
+
+.greenButton {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    padding: 10px 20px;
+    background-color: #00d100;
+    border: 0px solid #6cf96c;
+    cursor: pointer;
+}
+
+.greenButton:hover {
+    background-color: lightgreen;
+}
+
+.verticalLine {
+    position: absolute;
+    left: calc(300px + 75px + 5vw); /* Расстояние от grayContainer */
+    top: 50%; /* Чтобы линия начиналась по центру */
+    width: 2px; /* Толщина вертикальной линии */
+    height: 0;
+    background-color: grey;
+    transform: translateY(-50%); /* Центрирование относительно вертикали */
+    opacity: 0;
+    transition: all 1s;
+    margin-right: 10px;
+}
+
+.verticalLine.loaded {
+    opacity: 1;
+    height: 90%; /* Высота линии после анимации */
+    transition-delay: 0.7s;
+}
+
+.cardsContainer {
+    position: absolute;
+    scroll-snap-align: start;
+    top: calc(60px + 1em);
+    left: calc(300px + 75px + 5vw + 35px); /* Учитывает интервал между элементами */
+    display: flex; /* Включаем flexbox для горизонтального размещения */
+    align-items: stretch;
+    height: 45%;
+    width: calc(100% - (90px + 75px + 25vw));
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.cardsContainer::-webkit-scrollbar {
+    width: 0; /* Скрыть стандартный скроллер в Chrome, Safari, и Opera */
+}
+
+.card {
+    width: 300px; /* Измените ширину по своему усмотрению */
+    height: 90%;
+    top: 0;
+    background-color: #D9D9D9;
+    position: relative; /* Измените на relative, чтобы элементы были видимы внутри контейнера */
+    margin-right: 35px; /* Расстояние между элементами */
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 1s, transform 1s;
+    transition-delay: 2.2s;
+    flex: 0 0 auto; /* Отключаем растягивание элементов */
+}
+
+/* Добавьте следующее правило для последнего элемента, чтобы убрать правый отступ */
+.card:last-child {
+    margin-right: 0;
+}
+
+.card.loaded {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.cardText {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333333;
+    padding: 5px;
+}
+
+.cardsContainer::-webkit-scrollbar {
+    height: 0; /* Скрыть стандартный горизонтальный скроллер в Chrome, Safari и Opera */
+}
+
+/* Стили для кастомного скроллера */
+.scrollbar-container {
+    position: absolute;
+    top: calc(50px + 1em);
+    left: calc(300px + 75px + 5vw + 35px);
+    width: calc(100% - (90px + 75px + 25vw) - 30px);
+    height: 3px; /* Высота кастомного скроллера */
+    background-color: #777777; /* Цвет кастомного скроллера */
+    border-radius: 5px; /* Округленные углы кастомного скроллера */
+    opacity: 0; /* Скрываем скроллер изначально */
+    transition: opacity 0.3s; /* Анимация появления/исчезания скроллера */
+}
+
+.scrollbar {
+    width: 100%; /* Ширина скроллера будет меняться в зависимости от прокрутки */
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.5;/* Цвет полосы скроллера */
+    border-radius: 5px; /* Округленные углы полосы скроллера */
+    transition: width 0.3s; /* Анимация изменения ширины скроллера */
+}
+
+#StaticText1 {
+    position: absolute;
+    top: 0;
+    margin-top: 15px;
+    left: calc(300px + 75px + 5vw + 35px);
+    font-size: 5vmin;
+    opacity: 0;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    transform: translateX(-20px);
+    transition: opacity 1s, transform 1s;
+}
+
+#StaticText1.loaded {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+#StaticText2 {
+    position: absolute;
+    top: calc(50% + 10px);
+    margin-top: 15px;
+    left: calc(300px + 75px + 5vw + 35px);
+    font-size: 5vmin;
+    opacity: 0;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    transform: translateX(-20px);
+    transition: opacity 1s, transform 1s;
+}
+
+#StaticText2.loaded {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.cardsContainer2 {
+    position: absolute;
+    scroll-snap-align: start;
+    top: calc(50% + 70px + 1em);
+    left: calc(300px + 75px + 5vw + 35px); /* Учитывает интервал между элементами */
+    display: flex; /* Включаем flexbox для горизонтального размещения */
+    align-items: stretch;
+    height: 40%;
+    width: calc(100% - (90px + 75px + 25vw));
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.cardsContainer2::-webkit-scrollbar {
+    width: 0; /* Скрыть стандартный скроллер в Chrome, Safari, и Opera */
+}
+
+.card2 {
+    width: 420px; /* Измените ширину по своему усмотрению */
+    height: 90%;
+    top: 0;
+    background-color: #D9D9D9;
+    position: relative; /* Измените на relative, чтобы элементы были видимы внутри контейнера */
+    margin-right: 35px; /* Расстояние между элементами */
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 1s, transform 1s;
+    transition-delay: 2.7s;
+    flex: 0 0 auto; /* Отключаем растягивание элементов */
+}
+
+/* Добавьте следующее правило для последнего элемента, чтобы убрать правый отступ */
+.card2:last-child {
+    margin-right: 0;
+}
+
+.card2.loaded {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scrollbar-container2 {
+    position: absolute;
+    top: calc(50% + 60px + 1em);
+    left: calc(300px + 75px + 5vw + 35px);
+    width: calc(100% - (90px + 75px + 25vw) - 30px);
+    height: 3px; /* Высота кастомного скроллера */
+    background-color: #777777; /* Цвет кастомного скроллера */
+    border-radius: 5px; /* Округленные углы кастомного скроллера */
+    opacity: 0; /* Скрываем скроллер изначально */
+    transition: opacity 0.3s; /* Анимация появления/исчезания скроллера */
+}
+
+.scrollbar2 {
+    width: 100%; /* Ширина скроллера будет меняться в зависимости от прокрутки */
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.5;/* Цвет полосы скроллера */
+    border-radius: 5px; /* Округленные углы полосы скроллера */
+    transition: width 0.3s; /* Анимация изменения ширины скроллера */
+}
+
+img {
+    width: 100%; /* Ширина изображения равна ширине контейнера */
+    height: 100%; /* Высота изображения равна высоте контейнера */
+    object-fit: cover; /* Изображение заполняет контейнер с обрезкой */
+}
+
+.rectangle1 {
+    width: 100%;
+    height: 65%;
+    background-color: #464646;
+    margin-bottom: 10px;
+}
+
+.rectangle2 {
+    width: 30%;
+    height: 100%;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+p {
+    /* margin-top: 10px;
+    margin-left: 10px; */
+    margin: 10px;
+}
+
+.mi {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    margin-bottom: 18px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* При наведении на ссылку */
+.mi:hover {
+    text-decoration: underline;
+}
+
+/* Стили для карточки card2 */
+.card2 {
+    display: flex; /* Используем Flexbox для размещения изображения и текста внутри карточки */
+    align-items: flex-start; /* Выравниваем элементы по верхнему краю */
+    margin-bottom: 20px; /* Добавляем отступ между карточками */
+}
+
+/* Стили для контейнера с изображением */
+.rectangle2 {
+    flex: 0 0 auto; /* Изображение останется фиксированной ширины */
+    margin-right: 10px; /* Добавляем отступ между изображением и текстом */
+}
+
+/* Стили для контейнера с текстовым содержимым */
+.card2-content {
+    flex: 1; /* Занимает доступное пространство справа от изображения */
+}
+
+/* Стили для заголовка */
+.card2-content h3 {
+    font-size: 20px;
+    font-weight: bold;
+    top: 20px;
+    margin-top: 10px;
+    color: #333;
+}
+
+/* Стили для описания */
+.card2-content p {
+    margin: 10px;
+    color: #666;
+}
+
+/* Стили для текстовой ссылки */
+.card2-content .mi {
+    text-decoration: none;
+    color: blue;
+    font-weight: bold;
+}
+
+/* При наведении на ссылку */
+.card2-content .mi:hover {
+    text-decoration: underline;
+}
+
+/* Стили для иконок меню */
+.menu-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Выравнивание по левому краю */
+    justify-content: center;
+    height: 100%; /* Занимает всю высоту бокового меню */
+}
+
+.menu-icon {
+    display: flex;
+    align-items: center; /* Выравнивание по центру вертикально */
+    position: relative;
+    text-align: left; /* Выравнивание текста слева */
+    margin-bottom: 40px;
+    margin-left: 12px;
+}
+
+i {
+    font-size: 35px;
+    color: white;
+}
+
+.menu-icon-label {
+    color: white;
+    position: absolute;
+    left: 0px; /* Скрываем текст за пределами бокового меню */
+    opacity: 0;
+    transition: left 0.5s, opacity 0.5s;
+}
+
+/* При раскрытом сайдбаре показываем текст */
+#sidebar.expanded .menu-icon-label {
+    left: 60px; /* Позиция текста справа от иконки */
+    opacity: 1;
+}
