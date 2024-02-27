@@ -1,4 +1,6 @@
 <template>
+  <link href="@/assets/uicons-solid-rounded.css" rel="stylesheet">
+  <Sidebar></Sidebar>
   <div id="content">
     <div class="text">
       <p id="dynamicText">{{ dynamicText }}</p>
@@ -37,22 +39,25 @@
 
 import Card from "@/components/Card.vue";
 import Card2 from "@/components/Card2.vue";
+import Sidebar from "@/components/Sidebar.vue";
+import '@/assets/styles.css'
+
 export default {
   data() {
     return {
       isLoaded: false,
-      text: "Carcsssone season rang match is basically three month a periond of simple text for showing maket",
+      text: "Carcassone season rang match is basically three month a periond of simple text for showing maket",
       dynamicText: "Start game",
       cards: [
-        { id: 1, title: "Card 1", imgSrc: "/src/assets/images/newsImg.jpg", text: this.text },
-        { id: 2, title: "Card 2", imgSrc: "/src/assets/images/newsImg.jpg", text: this.text },
-        { id: 3, title: "Card 3", imgSrc: "/src/assets/images/newsImg.jpg", text: this.text },
+        {id: 1, title: "Card 1", imgSrc: "/src/assets/images/newsImg.jpg", text: this.text},
+        {id: 2, title: "Card 2", imgSrc: "/src/assets/images/newsImg.jpg", text: this.text},
+        {id: 3, title: "Card 3", imgSrc: "/src/assets/images/newsImg.jpg", text: this.text},
         // Добавьте больше карточек по вашему выбору
       ],
       cards2: [
-        { id: 1, title: "Card2 1", imgSrc: "/src/assets/images/dlcImg.png" },
-        { id: 2, title: "Card2 2", imgSrc: "/src/assets/images/dlcImg.png" },
-        { id: 3, title: "Card2 3", imgSrc: "/src/assets/images/dlcImg.png" },
+        {id: 1, title: "Card2 1", imgSrc: "/src/assets/images/dlcImg.png"},
+        {id: 2, title: "Card2 2", imgSrc: "/src/assets/images/dlcImg.png"},
+        {id: 3, title: "Card2 3", imgSrc: "/src/assets/images/dlcImg.png"},
         // Добавьте больше карточек DLC по вашему выбору
       ],
       scrollbarWidth: '0%',
@@ -64,6 +69,7 @@ export default {
   components: {
     Card,
     Card2,
+    Sidebar,
   },
   computed: {
     scrollbarStyle() {
@@ -104,4 +110,9 @@ export default {
 </script>
 
 <style scoped>
+#content {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  position: relative;
+}
+
 </style>
