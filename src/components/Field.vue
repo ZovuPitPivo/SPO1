@@ -52,18 +52,19 @@ tileInfo.forEach(tile => {
 
 let riversImgs = images.filter(img => img.includes('R1') || img.includes('R2'));
 const firstIndex = riversImgs.findIndex(img => img.includes('0r0c_R1.svg'));
-const lastIndex = riversImgs.lastIndexOf(img => img.includes('0r0c_R1.svg'));
+const lastIndex = riversImgs.lastIndexOf('/src/assets/tiles/0r0c_R1.svg');
 
+console.log(riversImgs)
 console.log(firstIndex, lastIndex)
 
 if (firstIndex !== -1) {
   riversImgs.splice(firstIndex, 1);
-  riversImgs.unshift('0r0c_R1.svg');
+  riversImgs.unshift('/src/assets/tiles/0r0c_R1.svg');
 }
 
 if (lastIndex !== -1) {
   riversImgs.splice(lastIndex, 1);
-  riversImgs.push('0r0c_R1.svg');
+  riversImgs.push('/src/assets/tiles/0r0c_R1.svg');
 }
 
 export default {
@@ -131,25 +132,19 @@ export default {
       }
     },
     handleClick(event) {
+      let imgIndex;
       if (!this.selectedImage) {
-        // Первый клик - выбор изображения
-        let imgIndex;
-        if (!this.firstTileSelected) {
-          if (this.riversImgsIndex < this.riversImgs.length) {
-            imgIndex = this.images.findIndex(img => img === this.riversImgs[this.riversImgsIndex]);
-            this.riversImgsIndex++;
-          } else {
-            imgIndex = Math.floor(Math.random() * this.images.length);
-          }
-          this.firstTileSelected = true;
-        } else {
-          imgIndex = Math.floor(Math.random() * this.images.length);
+        // Если изображение не выбрано, выбираем его
+        if (this.riversImgsIndex < this.riversImgs.length) {
+          // Еще есть изображения рек для выбора
+          this.selectedImage = this.riversImgs[this.riversImgsIndex++];
+          this.drawSelectedImage();
+        } else if (this.images.length > 0) {
+          // Изображения рек закончились, выбираем из оставшихся изображений
+          let randomIndex = Math.floor(Math.random() * this.images.length);
+          this.selectedImage = this.images.splice(randomIndex, 1)[0];
+          this.drawSelectedImage();
         }
-
-        this.selectedImage = this.images[imgIndex];
-        this.selectedImageRotation = 0; // Сброс угла поворота
-        this.images.splice(imgIndex, 1);
-        this.drawSelectedImage();
       } else {
         // Второй клик - размещение изображения на поле
         const rect = this.$refs.gameCanvas.getBoundingClientRect();
