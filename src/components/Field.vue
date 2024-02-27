@@ -35,8 +35,8 @@ export default {
       const majorLineInterval = 5; // Каждая 10-я линия будет более толстой
       const minorLineWidth = 0.5; // Толщина тонких линий
       const majorLineWidth = 1; // Толщина толстых линий
-      const minorLineColor = '#203148'; // Цвет тонких линий
-      const majorLineColor = '#1c3348'; // Цвет толстых линий
+      const minorLineColor = 'rgba(129,129,129,0.52)'; // Цвет тонких линий
+      const majorLineColor = 'rgba(208,208,208,0.55)'; // Цвет толстых линий
 
       // Рисуем сетку
       for (let x = 0; x <= width; x += gridSpacing) {
