@@ -3,8 +3,10 @@
     <button @click="toggleSidebar" class="playCrossBtn"></button>
     <div class="menu-icons">
       <div class="menu-icon" v-for="(icon, index) in icons" :key="index">
-        <i :class="icon.class"></i>
-        <div class="menu-icon-label">{{ icon.label }}</div>
+        <router-link :to="icon.path">
+          <div class="menu-icon-label">{{ icon.label }}</div>
+          <i :class="icon.class"></i>
+        </router-link>
       </div>
     </div>
   </div>
@@ -18,9 +20,9 @@ export default {
       isExpanded: false,
       isLoaded: false,
       icons: [
-        { class: 'fi fi-sr-play', label: 'Запустить игру' },
-        { class: 'fi fi-sr-globe', label: 'Создать комнату' },
-        { class: 'fi fi-sr-settings', label: 'Настройки' },
+        {class: 'fi fi-sr-play', label: 'Запустить игру', path: '/Game'},
+        {class: 'fi fi-sr-globe', label: 'Создать комнату', path: ''},
+        {class: 'fi fi-sr-settings', label: 'Настройки', path: ''},
       ],
     };
   },
@@ -42,7 +44,7 @@ export default {
     //   }
     // },
     loadData() {
-        this.isLoaded = true;
+      this.isLoaded = true;
     },
   },
 };

@@ -2,11 +2,13 @@
   <div class="game-field-container">
     <canvas ref="gameCanvas" @click="handleClick">
     </canvas>
-<!--    <button class="rotate-button" v-if="selectedImage" @click="rotateSelectedImage">Повернуть плитку</button>-->
   </div>
+  <GameMenu/>
 </template>
 
 <script>
+import GameMenu from "@/components/GameMenu.vue";
+
 const tileInfo = [
   {path: '/src/assets/tiles/0r0c_R0+M.svg', count: 4},
   {path: '/src/assets/tiles/0r0c_R1.svg', count: 2},
@@ -66,9 +68,11 @@ if (lastIndex !== -1) {
   riversImgs.splice(lastIndex, 1);
   riversImgs.push('/src/assets/tiles/0r0c_R1.svg');
 }
+images = images.filter(img => img.includes('R0'));
 
 export default {
   name: 'GameField',
+  components: {GameMenu},
   data() {
     return {
       images,

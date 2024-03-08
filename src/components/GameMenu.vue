@@ -40,7 +40,7 @@ export default {
   padding: 5px;
   border-radius: 5px;
   position: absolute;
-  background: white;
+  background: gray;
   bottom: 15px;
   left: 15px;
   display: flex;
@@ -50,7 +50,7 @@ export default {
 .menu-button {
   padding-top: 5px;
   font-size: 23pt;
-  background: white;
+  background: gray;
   border: none;
   cursor: pointer;
   color: black;
