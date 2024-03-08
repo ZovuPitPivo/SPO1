@@ -1,6 +1,6 @@
 <template>
   <div class="menu-container">
-    <button v-for="button in buttons" :key="button.id" class="menu-button" @click=button.func>
+    <button v-for="button in buttons" :key="button.id" class="menu-button" @click="handleButtonClick(button.id)">
       <i :class="`fi ${button.icon}`"></i>
     </button>
   </div>
@@ -11,27 +11,22 @@ export default {
   name: 'GameMenu',
   data() {
     return {
-      fb_states: [
-        { id: 1, icon: 'fi-sr-diamond-turn-right' }, // Get the card (start turn)
-        { id: 2, icon: "fi-sr-arrow-down-to-square"}, // Place the card
-        { id: 3, icon: "fi-sr-badge-check"} // End turn
-      ],
       buttons: [
-        { id: 1, icon: 'fi-sr-diamond-turn-right', func: null},
-        { id: 2, icon: 'fi-sr-admin', func: null},
-        { id: 3, icon: 'fi-sr-rotate-left', func: this.rotateLeft },
-        { id: 4, icon: 'fi-sr-rotate-right', func: this.rotateRight },
+        { id: 1, icon: 'fi-sr-diamond-turn-right', func: 'takeCard' },
+        { id: 2, icon: 'fi-sr-arrow-down-to-square', func: 'placeCard' },
+        { id: 3, icon: 'fi-sr-rotate-left', func: 'rotateLeft' },
+        { id: 4, icon: 'fi-sr-rotate-right', func: 'rotateRight' },
       ],
     };
   },
   methods: {
-    rotateLeft() {
-      this.$emit('rotate-image', 'left');
+    handleButtonClick(id) {
+      const button = this.buttons.find(btn => btn.id === id);
+      if (button.func) {
+        this.$emit(button.func);
+      }
     },
-    rotateRight() {
-      this.$emit('rotate-image', 'right');
-    }
-  }
+  },
 };
 </script>
 
@@ -56,4 +51,3 @@ export default {
   color: black;
 }
 </style>
-

@@ -2,8 +2,8 @@
   <div class="game-field-container">
     <canvas ref="gameCanvas" @click="handleClick">
     </canvas>
+    <GameMenu @takeCard="takeCard" @placeCard="placeCard" @rotateLeft="rotateLeft" @rotateRight="rotateRight"/>
   </div>
-  <GameMenu/>
 </template>
 
 <script>
@@ -78,9 +78,11 @@ export default {
       images,
       riversImgs,
       gridSpacing: 70,
+      riversImgsIndex: 0,
+      selectedCell: null,
       selectedImage: null,
       selectedImageRotation: 0,
-      riversImgsIndex: 0,
+      selectedCellBorder: null,
     };
   },
   mounted() {
@@ -134,6 +136,17 @@ export default {
         ctx.strokeStyle = y % (gridSpacing * majorLineInterval) === 0 ? majorLineColor : minorLineColor;
         ctx.stroke();
       }
+      if (this.selectedCellBorder) {
+        const canvas = this.$refs.gameCanvas;
+        const ctx = canvas.getContext('2d');
+        const x = this.selectedCellBorder.x * this.gridSpacing;
+        const y = this.selectedCellBorder.y * this.gridSpacing;
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, this.gridSpacing, this.gridSpacing);
+        ctx.setLineDash([]);
+      }
     },
     takeCard() {
       if (this.riversImgsIndex < this.riversImgs.length) {
@@ -148,32 +161,44 @@ export default {
       }
     },
     placeCard() {
-
-    },
-    handleClick(event) {
-      if (!this.selectedImage) {
-        // Если изображение не выбрано, выбираем его
-        if (this.riversImgsIndex < this.riversImgs.length) {
-          // Еще есть изображения рек для выбора
-          this.selectedImage = this.riversImgs[this.riversImgsIndex++];
-          this.drawSelectedImage();
-        } else if (this.images.length > 0) {
-          // Изображения рек закончились, выбираем из оставшихся изображений
-          let randomIndex = Math.floor(Math.random() * this.images.length);
-          this.selectedImage = this.images.splice(randomIndex, 1)[0];
-          this.drawSelectedImage();
-        }
-      } else {
-        // Второй клик - размещение изображения на поле
-        const rect = this.$refs.gameCanvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        const gridX = Math.floor(x / this.gridSpacing);
-        const gridY = Math.floor(y / this.gridSpacing);
-        this.drawSvgImage(gridX, gridY, this.selectedImage, this.selectedImageRotation);
+      if (this.selectedCell && this.selectedImage) {
+        const {x, y} = this.selectedCell;
+        this.drawSvgImage(x, y, this.selectedImage, this.selectedImageRotation);
         this.selectedImage = null;
         this.selectedImageRotation = 0;
+        this.selectedCell = null;
+        this.selectedCellBorder = null;
       }
+    },
+    rotateRight() {
+      if (this.selectedImage) {
+        this.selectedImageRotation += 90;
+        if (this.selectedImageRotation >= 360) {
+          this.selectedImageRotation = 0;
+        }
+        this.drawSelectedImage();
+      }
+    },
+    rotateLeft() {
+      if (this.selectedImage) {
+        this.selectedImageRotation -= 90;
+        if (this.selectedImageRotation < 0) {
+          this.selectedImageRotation = 270;
+        }
+        this.drawSelectedImage();
+      }
+    },
+    handleClick(event) {
+      const rect = this.$refs.gameCanvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const gridX = Math.floor(x / this.gridSpacing);
+      const gridY = Math.floor(y / this.gridSpacing);
+
+      this.selectedCell = {x: gridX, y: gridY};
+      this.selectedCellBorder = {x: gridX, y: gridY};
+      this.drawGameField();
+      this.drawSelectedImage();
     },
     drawSvgImage(gridX, gridY, imgSrc, rotation) {
       const canvas = this.$refs.gameCanvas;
@@ -207,16 +232,6 @@ export default {
         ctx.restore();
       };
     },
-    rotateSelectedImage(direction = 'right') {
-      if (!this.selectedImage) return;
-      this.selectedImageRotation += direction === 'right' ? 90 : -90;
-      if (this.selectedImageRotation >= 360) {
-        this.selectedImageRotation = 0;
-      } else if (this.selectedImageRotation < 0) {
-        this.selectedImageRotation = 270;
-      }
-      this.drawSelectedImage();
-    }
   },
 };
 </script>
@@ -230,12 +245,5 @@ export default {
 
 canvas {
   display: block; /* Убирает полосу прокрутки */
-}
-
-.rotate-button {
-  position: absolute;
-  top: calc(10px + 70px);
-  right: 20px;
-  z-index: 10;
 }
 </style>
