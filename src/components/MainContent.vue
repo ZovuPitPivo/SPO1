@@ -85,7 +85,6 @@ export default {
     },
   },
   mounted() {
-    this.isLoaded = true;
     setTimeout(this.loadData, 700);
   },
   methods: {

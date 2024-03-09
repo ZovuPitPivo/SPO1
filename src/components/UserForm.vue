@@ -43,7 +43,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.get(`http://localhost:3000/players?Username=${this.username}&Password=${this.password}`);
+        const response = await axios.get(`http://192.168.1.100:5174/players?Username=${this.username}&Password=${this.password}`);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -51,7 +51,7 @@ export default {
     },
     async register() {
       try {
-        const response = await axios.post('http://localhost:3000/players', {
+        const response = await axios.post('http://192.168.1.100:5174/players', {
           Username: this.username,
           Password: this.password,
           Email: this.email
@@ -66,17 +66,6 @@ export default {
 </script>
 
 <style scoped>
-.slide-fade-enter-active {
-  transition: all 0.3s ease;
-}
-.slide-fade-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter-from, .slide-fade-leave-to {
-  transform: translateY(10px);
-  opacity: 0;
-}
-
 .container {
   max-width: 400px;
   margin: 100px auto;
@@ -106,10 +95,6 @@ export default {
 
 .tab-content {
   padding: 20px;
-}
-
-.login-form, .register-form {
-  display: block;
 }
 
 h2 {
