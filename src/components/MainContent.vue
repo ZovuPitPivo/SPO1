@@ -2,7 +2,7 @@
   <link href="../assets/uicons-solid-rounded.css" rel="stylesheet">
   <div id="content">
     <div class="text">
-      <p id="dynamicText">{{ dynamicText }}</p>
+      <p :class="{ 'dynamicText': true, 'loaded': isLoaded}">{{ dynamicText }}</p>
     </div>
     <div :class="{ 'greyContainer': true, 'loaded': isLoaded}">
       <div class="blackRectangle">
@@ -12,9 +12,9 @@
       <p>Carcsssone season rang match is basically three month a periond of simple text for showing maket</p>
       <button class="greenButton">PLAY</button>
     </div>
-    <div :class="{ 'verticalline': true, 'loaded': isLoaded}"></div>
+    <div :class="{ 'verticalLine': true, 'loaded': isLoaded}"></div>
     <div class="text">
-      <p id="StaticText1">News</p>
+      <p :class="{ 'StaticText1': true, 'loaded': isLoaded}">News</p>
     </div>
     <div class="scrollbar-container">
       <div class="scrollbar"></div>
@@ -23,7 +23,7 @@
       <Card v-for="(card, index) in cards" :key="index" :data="card"></Card>
     </div>
     <div class="text">
-      <p id="StaticText2">DLC</p>
+      <p :class="{ 'StaticText2': true, 'loaded': isLoaded}">DLC</p>
     </div>
     <div class="scrollbar-container2">
       <div class="scrollbar2"></div>
@@ -45,6 +45,8 @@ export default {
   data() {
     return {
       isLoaded: false,
+      isLoaded2: false,
+      isLoaded3: false,
       text: "Carcassone season rang match is basically three month a periond of simple text for showing maket",
       dynamicText: "Start game",
       cards: [
@@ -85,12 +87,18 @@ export default {
     },
   },
   mounted() {
-    setTimeout(this.loadData, 700);
   },
   methods: {
     loadData() {
       this.isLoaded = true;
     },
+    loadData2() {
+      this.isLoaded2 = true;
+    },
+    loadData3() {
+      this.isLoaded3 = true;
+    },
+
     handleScroll() {
       const container = this.$refs.cardsContainer;
       const scrollPercentage = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
@@ -103,6 +111,17 @@ export default {
       this.scrollbar2Width = `${(container.clientWidth / container.scrollWidth) * 100}%`;
       this.scrollbar2Offset = `${scrollPercentage * (container.clientWidth - parseFloat(this.scrollbar2Width)) / 100}px`;
     },
+    checkAuth() {
+      // Проверяем наличие токена в localStorage
+      const token = localStorage.getItem('user-token');
+      this.isAuthenticated = !!token;
+    },
+  },
+  created() {
+    this.checkAuth();
+    setTimeout(this.loadData, 0);
+    setTimeout(this.loadData2, 700);
+    setTimeout(this.loadData3, 1400);
   },
 };
 </script>

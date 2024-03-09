@@ -20,18 +20,21 @@
 export default {
   data() {
     return {
+      user: 'Авторизация',
+      isAuthenticated: false,
       isExpanded: false,
       isLoaded: false,
       icons: [
         {class: 'fi fi-sr-play', label: 'Запустить игру', path: '/Game'},
         {class: 'fi fi-sr-globe', label: 'Создать комнату', path: ''},
-        {class: 'fi fi-sr-user-injured', label: 'Авторизация', path: '/registration'},
+        {class: 'fi fi-sr-user-injured', label: this.whoAmI(), path: '/registration'},
         {class: 'fi fi-sr-settings', label: 'Настройки', path: ''},
       ],
     };
   },
   mounted() {
     this.loadData();
+    this.checkAuth();
   },
   methods: {
     toggleSidebar() {
@@ -49,6 +52,15 @@ export default {
     // },
     loadData() {
       this.isLoaded = true;
+    },
+    whoAmI() {
+      this.checkAuth()
+      return this.user
+    },
+    checkAuth() {
+      // Проверяем наличие токена в localStorage
+      const token = localStorage.getItem('user-token');
+      !!token ? this.user = localStorage.getItem('user-name') : 'Авторизация';
     },
   },
 };
