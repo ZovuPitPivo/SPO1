@@ -136,17 +136,6 @@ export default {
         ctx.strokeStyle = y % (gridSpacing * majorLineInterval) === 0 ? majorLineColor : minorLineColor;
         ctx.stroke();
       }
-      if (this.selectedCellBorder) {
-        const canvas = this.$refs.gameCanvas;
-        const ctx = canvas.getContext('2d');
-        const x = this.selectedCellBorder.x * this.gridSpacing;
-        const y = this.selectedCellBorder.y * this.gridSpacing;
-        ctx.setLineDash([5, 5]);
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, this.gridSpacing, this.gridSpacing);
-        ctx.setLineDash([]);
-      }
     },
     takeCard() {
       if (this.riversImgsIndex < this.riversImgs.length) {
@@ -197,8 +186,8 @@ export default {
 
       this.selectedCell = {x: gridX, y: gridY};
       this.selectedCellBorder = {x: gridX, y: gridY};
-      this.drawGameField();
       this.drawSelectedImage();
+
     },
     drawSvgImage(gridX, gridY, imgSrc, rotation) {
       const canvas = this.$refs.gameCanvas;
