@@ -1,6 +1,5 @@
 <template>
-  <link href="@/assets/uicons-solid-rounded.css" rel="stylesheet">
-  <Sidebar></Sidebar>
+  <link href="../assets/uicons-solid-rounded.css" rel="stylesheet">
   <div id="content">
     <div class="text">
       <p id="dynamicText">{{ dynamicText }}</p>
